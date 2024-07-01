@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Recommend A New Show</title>
+</head>
+<body>
+    <div class="container">
+        <h3>Welcome to your NEXTFIX, {{session['loggedin.first_name']}} {{session['loggedin.last_name']}}</h3>
+        <div class="text-end">
+            <a href="/shows">TV Shows</a>
+            <a href="/logout" class="ms-5 me-3">Logout</a>
+        </div>
+        <div class="text-danger container d-flex justify-content-center align-items-center">
+            {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <div class="border border-danger-subtle mt-3 p-2">
+                            <ul>
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                            
+                        {% endif %}
+            {% endwith %}
+        </div>
+        <h5>Recommend A New Show</h5>
+        <div class="border border-black p-4 w-50">
+            <form action="/shows/new" method="POST">
+                <input type="hidden" name="user_id" value="{{session['loggedin.id']}}">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" value="{{session['title']}}" class="form-control" id="title" name="title">
+                </div>
+                <div class="mb-3">
+                    <label for="network" class="form-label">Network</label>
+                    <input type="text" value="{{session['network']}}" class="form-control" id="network" name="network">
+                </div>
+                <div class="mb-3">
+                    <label for="release_date" class="form-label">Release Date</label>
+                    <input type="date"  value="{{session['release_date']}}" class="form-control" id="release_date" name="release_date">
+                </div>
+                <div class="mb-3">
+                    <label for="comments" class="form-label">Comments</label>
+                    <textarea class="form-control" id="comments" name="comments" rows="3">{{session['comments']}}</textarea>
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

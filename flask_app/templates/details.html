@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>TV Shows Details</title>
+</head>
+<body>
+    <div class="container">
+        <div class="text-end mt-4">
+            <a href="/shows">TV Shows</a>
+            <a href="/logout" class="ms-5 me-3">Logout</a>
+        </div>
+        <div class="border border-black p-4 w-50 mb-4">
+            <h5>{{ show.title }}</h5>
+            <p>Recommended By: {{show.user.first_name}} {{show.user.last_name}}</p>
+            <p>Network: {{ show.network }}</p>
+            <p>Release Date: {{ show.release_date }}</p>
+            <p>{{show.user.first_name}}'s comments: {{ show.comments }}</p>
+        </div>
+        <form action="/shows/{{show.id}}" method="post"  class="w-50">
+            <input type="hidden" name="tvshow_id" value="{{show.id}}">
+            <input type="hidden" name="user_id" value="{{session['loggedin.id']}}">
+            <div class="mb-3">
+                <label for="message" class="form-label">Post Comment</label>
+                <input type="text" class="form-control" id="message" name="message" {% if session['loggedin.id'] == show.user_id %}disabled{% endif %}>
+            </div>
+            <div class="text-end mb-3">
+                <button type="submit" class="btn btn-primary" {% if session['loggedin.id'] == show.user_id %}disabled{% endif %}>Post</button>
+            </div>
+        </form>
+        <div class="w-50">
+            {% for message in messages %}
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p class="mb-1">{{message.user.first_name}} at {{message.created_at.strftime('%I:%M:%S %p')}} on {{message.created_at.strftime('%B %d')}}</p>
+                        <p>{{ message.message }}</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-danger ms-4 "  {% if session['loggedin.id'] != message.user_id %} hidden {% endif %}><a href="/delete_comment/{{message.id}}/{{message.user.id}}/{{show.id}}" class="button">Delete</a> </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
